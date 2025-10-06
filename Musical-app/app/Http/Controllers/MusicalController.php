@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Musical;
 use Illuminate\Http\Request;
+use illuminate\Support\Facades\Storage;
 
 class MusicalController extends Controller
 {
@@ -21,7 +22,7 @@ class MusicalController extends Controller
      */
     public function create()
     {
-        //
+        return view('musicals.create');
     }
 
     /**
@@ -29,7 +30,35 @@ class MusicalController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validate input
+        $request->validate([
+            'title' => 'required',
+            'description' => 'required|max:500',
+            'premiere_date' => 'required|date',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gij|max:2048',
+            'duration' => 'required|integer|min:1|max:600',
+            'director' => 'required|alpha|max:100',
+        ]);
+
+        // Check if the image is uploaded and handle it
+        if ($request->hasFile('image')) {
+
+            $imageName = time().'.'.$request->image->extension();
+            $request->image->move(public_path('images/musicals'), $imageName);
+        }
+
+        // Create a musical record in the database
+        Musical::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'premiere_date' => $request->premiere_date,
+            'image' => $imageName, //Stores image path/URL to database
+            'duration' => $request->duration,
+            'director' => $request->director
+        ]);
+
+        //Redirect to the index page when successful with message
+        return to_route('musicals.index')->with('success', 'Musical created successfully!');
     }
 
     /**

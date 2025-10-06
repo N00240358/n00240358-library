@@ -18,6 +18,9 @@
                     <x-nav-link :href="route('musicals.index')" :active="request()->routeIs('musicals.index')">
                         {{ __('View All Musicals') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('musicals.create')" :active="request()->routeIs('musicals.create')">
+                        {{ __('Create New Musicals') }}
+                    </x-nav-link>
                 </div>
             </div>
 

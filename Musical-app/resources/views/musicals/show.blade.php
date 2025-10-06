@@ -13,7 +13,7 @@
                         <x-musical-details
                         :title="$musical->title"
                         :image="$musical->image"
-                        :preimere_date="$musical->preimere_date"
+                        :premiere_date="$musical->premiere_date"
                         :description="$musical->description"
                         />
                 </div>

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('duration')->nullable();
             $table->string('director')->nullable();
             $table->date('premiere_date')->nullable();
+            $table->timestamps();
         });
     }
 

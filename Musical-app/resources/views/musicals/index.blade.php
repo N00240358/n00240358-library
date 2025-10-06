@@ -26,3 +26,8 @@
         </div>
     </div>
 </x-app-layout>
+
+{{-- gives an alert if an action was successfull i.e. making a new musical --}}
+<x-alert-success>
+    {{ session('session') }}
+</x-alert-success>
