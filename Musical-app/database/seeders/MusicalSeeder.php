@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 
 class MusicalSeeder extends Seeder{
     public function run(): void{
-        Musical::insert([
+        Musical::insert([ //inserts experiment data into the database to check if things are working.
             [
                 'title' => 'Hamilton',
                 'image' => 'Hamilton.jpg',

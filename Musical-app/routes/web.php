@@ -18,13 +18,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/musicals', [MusicalController::class, 'index'])->name('musicals.index');
-Route::get('/musicals/create', [MusicalController::class, 'create'])->name('musicals.create');
-Route::get('/musicals/{musical}', [MusicalController::class, 'show'])->name('musicals.show');
-Route::post('/musicals', [MusicalController::class, 'store'])->name('musicals.store');
+// Musical Routes
 
-Route::get('/musicals/{musical}/edit', [MusicalController::class, 'edit'])->name('musicals.edit');
-Route::put('/musicals/{musical}', [MusicalController::class, 'update'])->name('musicals.update');
-Route::delete('/musicals/{musical}', [MusicalController::class, 'destroy'])->name('musicals.destroy');
+Route::get('/musicals', [MusicalController::class, 'index'])->name('musicals.index'); // using the Musical Controller to goto index.
+Route::get('/musicals/create', [MusicalController::class, 'create'])->name('musicals.create'); // using the Musical Controller to goto create.
+Route::get('/musicals/{musical}', [MusicalController::class, 'show'])->name('musicals.show'); // using the Musical Controller to goto show.
+Route::post('/musicals', [MusicalController::class, 'store'])->name('musicals.store'); // using the Musical Controller to goto store.
+
+Route::get('/musicals/{musical}/edit', [MusicalController::class, 'edit'])->name('musicals.edit'); // using the Musical Controller to goto edit.
+Route::put('/musicals/{musical}', [MusicalController::class, 'update'])->name('musicals.update'); // using the Musical Controller to goto update.
+Route::delete('/musicals/{musical}', [MusicalController::class, 'destroy'])->name('musicals.destroy'); // using the Musical Controller to goto destroy/delete.
 
 require __DIR__.'/auth.php';

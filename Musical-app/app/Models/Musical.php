@@ -9,7 +9,7 @@ class Musical extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+    protected $fillable = [ //what fields we can input data into for the database.
         'title',
         'description',
         'premiere_date',

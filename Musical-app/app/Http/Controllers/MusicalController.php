@@ -14,7 +14,7 @@ class MusicalController extends Controller
     public function index()
     {
         $musicals = Musical::all();
-        return view('musicals.index', compact('musicals'));
+        return view('musicals.index', compact('musicals')); // gets all the musicals from the database and put them in a array to pass to the view.
     }
 
     /**
@@ -22,7 +22,7 @@ class MusicalController extends Controller
      */
     public function create()
     {
-        return view('musicals.create');
+        return view('musicals.create'); // when clicked on moves the user to the create view
     }
 
     /**
@@ -32,30 +32,30 @@ class MusicalController extends Controller
     {
         // Validate input
         $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string|max:500',
-            'premiere_date' => ['required','regex:/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/'],
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'duration' => 'required|integer|min:1|max:600',
-            'director' => 'required|string|max:100',
+            'title' => 'required|string|max:255', // title is required, is a string with a max length of 255
+            'description' => 'required|string|max:500', // description is required, is a string with a max length of 500
+            'premiere_date' => ['required','regex:/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/'], // premiere date is required and regex is for YYYY-MM-DD
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // image is requried, has to be an image and be one of the types given and max size of 2048kb
+            'duration' => 'required|integer|min:1|max:600', // duration is required, needs to be between 1 and 600 minutes and an integer
+            'director' => 'required|string|max:100', // director is required, max length of 100 and a string
         ]);
 
 
         $imagePath = null;
-        // Check if the image is uploaded and handle it
+        // Check if the image is uploaded
         if ($request->hasFile('image')) {
 
-            $imageName = time().'.'.$request->image->extension();
-            $request->image->move(public_path('images/musicals'), $imageName);
-            $imagePath = 'images/musicals/' . $imageName; // path relative to public
+            $imageName = time().'.'.$request->image->extension(); // names image using current time
+            $request->image->move(public_path('images/musicals'), $imageName); //puts image in the correct folder
+            $imagePath = 'images/musicals/' . $imageName; // stores image URL to database
         }
 
-        // Create a musical record in the database
+        // Create a musical record in the database put data into the database
         Musical::create([
             'title' => $request->title,
             'description' => $request->description,
             'premiere_date' => $request->premiere_date,
-            'image' => $imageName, //Stores image path/URL to database
+            'image' => $imageName,
             'duration' => $request->duration,
             'director' => $request->director
         ]);
@@ -69,7 +69,7 @@ class MusicalController extends Controller
      */
     public function show(Musical $musical)
     {
-        return view('musicals.show')->with('musical', $musical);
+        return view('musicals.show')->with('musical', $musical); //when you click on a musical it takes you to the show view and shows the details of that musical
     }
 
     /**
@@ -77,30 +77,30 @@ class MusicalController extends Controller
      */
     public function edit(Musical $musical)
     {
-        return view('musicals.edit')->with('musical', $musical);
+        return view('musicals.edit')->with('musical', $musical); //brings you to the form with the correct id to edit
     }
 
     /**
      * Update the specified resource in storage.
      */
    public function update(Request $request, Musical $musical)
-{
-    $request->validate([
+{ 
+    $request->validate([ //validation is the same as store
         'title' => 'required|string|max:255',
         'description' => 'required|string|max:500',
         'premiere_date' => 'required|date',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // <- nullable now
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // is now nullable as if not it requires you to unput the same image again or a different one.
         'duration' => 'required|integer|min:1|max:600',
         'director' => 'required|string|max:100',
     ]);
 
     // Handle image if uploaded
     if ($request->hasFile('image')) {
-        // Delete old image if it exists
+        // checks if a previous image exists
         if ($musical->image && file_exists(public_path($musical->image))) {
-            unlink(public_path($musical->image));
+            unlink(public_path($musical->image)); //deletes image from the images folder
         }
-
+        // same as the store function
         $imageName = time() . '.' . $request->image->extension();
         $request->image->move(public_path('images/musicals'), $imageName);
         $musical->image = $imageName; // store only filename
@@ -124,17 +124,18 @@ class MusicalController extends Controller
      */
     public function destroy(Musical $musical)
 {
-    // Build full path to the image
+    // get url to image folder
     $imagePath = public_path('images/musicals/' . $musical->image);
 
-    // Delete associated image if it exists
+    // Delete image if it exists in the folder
     if ($musical->image && file_exists($imagePath)) {
         unlink($imagePath);
     }
 
-    // Delete the musical record
+    // Delete the musical in the database
     $musical->delete();
-
+    // Redirect to index with success message
     return to_route('musicals.index')->with('success', 'Musical deleted successfully!');
+    //this ensures that nothing is left when a musical is deleted.
 }
 }

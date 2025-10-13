@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('musicals', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('image')->nullable();
-            $table->text('description')->nullable();
-            $table->integer('duration')->nullable();
-            $table->string('director')->nullable();
-            $table->date('premiere_date')->nullable();
-            $table->timestamps();
+            $table->id(); //makes id
+            $table->string('title'); //makes title
+            $table->string('image')->nullable(); //makes image
+            $table->text('description')->nullable(); //makes description
+            $table->integer('duration')->nullable(); //makes duration
+            $table->string('director')->nullable(); //makes director
+            $table->date('premiere_date')->nullable(); //makes premiere date
+            $table->timestamps(); //makes created at and updated at
         });
     }
 

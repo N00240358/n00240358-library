@@ -1,18 +1,13 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Create New Musical') }}
-        </h2>
-    </x-slot>
-
+    {{-- Styling for the New Musical button on the navbar as well as the code for routing the user to the correct place. --}}
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <h3 class="font-semibold text-lg mb-4">Add a New Musical:</h3>
+            <div class="bg-[#2b1b1b] overflow-hidden shadow-sm sm:rounded-lg border border-yellow-600/40">
+                <div class="p-6 text-white">
+                    <h3 class="font-semibold text-lg mb-4 text-[#f2c94c]">Add a New Musical:</h3>
 
                     <x-musical-form
-                        :action="route('musicals.store')"
+                        :action="route('musicals.store')" {{-- routes to the store method in the MusicalController to then the Musical Form --}}
                         :method="'POST'"
                     />
                 </div>
