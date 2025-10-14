@@ -16,6 +16,7 @@ class MusicalSeeder extends Seeder{
                 'duration' => 160,
                 'director' => 'Thomas Kail',
                 'premiere_date' => '2015-01-20',
+                'video' => 'https://www.youtube.com/watch?v=DSCKfXpAGHc',
             ],
             [
                 'title' => 'The Phantom of the Opera',
@@ -24,6 +25,7 @@ class MusicalSeeder extends Seeder{
                 'duration' => 145,
                 'director' => 'Harold Prince',
                 'premiere_date' => '1986-10-09',
+                'video' => 'https://www.youtube.com/watch?v=oJOIhEdakkA',
             ],
             [
                 'title' => 'Wicked',
@@ -32,6 +34,7 @@ class MusicalSeeder extends Seeder{
                 'duration' => 150,
                 'director' => 'Joe Mantello',
                 'premiere_date' => '2003-10-30',
+                'video' => 'https://www.youtube.com/watch?v=6COmYeLsz4c',
             ],
         ]);
     }

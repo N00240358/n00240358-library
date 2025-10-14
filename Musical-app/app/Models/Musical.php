@@ -16,5 +16,6 @@ class Musical extends Model
         'image',
         'duration',
         'director',
+        'video'
     ];
 }

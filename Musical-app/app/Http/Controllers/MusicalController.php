@@ -38,6 +38,7 @@ class MusicalController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // image is requried, has to be an image and be one of the types given and max size of 2048kb
             'duration' => 'required|integer|min:1|max:600', // duration is required, needs to be between 1 and 600 minutes and an integer
             'director' => 'required|string|max:100', // director is required, max length of 100 and a string
+            'video' => 'nullable|string|max:255', // video is not required, max length of 255 and a string
         ]);
 
 
@@ -57,7 +58,8 @@ class MusicalController extends Controller
             'premiere_date' => $request->premiere_date,
             'image' => $imageName,
             'duration' => $request->duration,
-            'director' => $request->director
+            'director' => $request->director,
+            'video' => $request->video
         ]);
 
         //Redirect to the index page when successful with message
@@ -92,6 +94,7 @@ class MusicalController extends Controller
         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // is now nullable as if not it requires you to unput the same image again or a different one.
         'duration' => 'required|integer|min:1|max:600',
         'director' => 'required|string|max:100',
+        'video' => 'nullable|string|max:255',
     ]);
 
     // Handle image if uploaded
@@ -112,6 +115,7 @@ class MusicalController extends Controller
     $musical->premiere_date = $request->premiere_date;
     $musical->duration = $request->duration;
     $musical->director = $request->director;
+    $musical->video = $request->video;
 
     $musical->save();
 

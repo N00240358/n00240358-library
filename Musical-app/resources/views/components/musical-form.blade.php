@@ -79,6 +79,22 @@
         @enderror
     </div>
 
+    {{-- Video URL --}}
+<div class="mb-4">
+    <label for="video" class="block text-sm text-white">Video URL</label>
+    <input
+        type="text"
+        name="video"
+        id="video"
+        value="{{ old('video', $musical->video ?? '') }}" {{-- if there is an old value from a failed validation will use it, otherwise get the video URL from the musical if editing --}}
+        class="mt-1 block w-5/6 border-gray-300 rounded-md shadow-sm bg-[#2b1b1b] text-white"
+        placeholder="Enter a YouTube or Vimeo URL" />
+    @error('video')
+        <p class="text-sm text-red-600">{{ $message }}</p> <!-- displays error message if validation fails -->
+    @enderror
+</div>
+
+
 {{-- Image --}}
 <div class="mb-4">
     <label for="image" class="block text-sm font-medium text-white">Musical Cover Image</label>

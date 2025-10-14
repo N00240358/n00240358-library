@@ -19,6 +19,7 @@
                         :description="$musical->description" {{-- pulls the description from the database with the correct id --}}
                         :director="$musical->director" {{-- pulls the director from the database with the correct id --}}
                         :duration="$musical->duration" {{-- pulls the duration from the database with the correct id --}}
+                        :video="$musical->video" {{-- pulls the video from the database with the correct id --}}
                     />
                 </div>
             </div>

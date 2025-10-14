@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('duration')->nullable(); //makes duration
             $table->string('director')->nullable(); //makes director
             $table->date('premiere_date')->nullable(); //makes premiere date
+            $table->string('video')->nullable(); //makes video
             $table->timestamps(); //makes created at and updated at
         });
     }
