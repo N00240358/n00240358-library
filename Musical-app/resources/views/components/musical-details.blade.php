@@ -1,71 +1,104 @@
-@props(['title', 'premiere_date', 'description', 'image', 'duration', 'director', 'video' => null]) <!-- gets title, premiere date, description, image, video, and other data as properties to call from the database -->
+@props(['title', 'premiere_date', 'description', 'image', 'duration', 'director', 'video' => null]) {{-- gets title, premiere date, description, image, video, and other data as properties to call from the database --}}
 
 @php
-    // Convert a normal YouTube link into an embeddable link with autoplay and muted
+    // Convert a normal YouTube link into an embeddable link
     if (!empty($video) && str_contains($video, 'watch?v=')) {
-        $video = str_replace('watch?v=', 'embed/', $video) . '?autoplay=1&mute=1';
+        $video = str_replace('watch?v=', 'embed/', $video);
     }
 @endphp
 
+<div {{-- Alpine component --}}
+x-data="{
+    showVideo: false,
+    player: null,
+    init() {
+        // Loads an instances of the youtube API for the iframe
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        document.body.appendChild(tag);
 
-<div class="border rounded-lg shadow-md p-8 bg-[#2b1b1b] hover:shadow-lg transition duration-300 max-w-6xl mx-auto border-yellow-600/40"> <!-- expanded border -->
+        // When the API is loaded the player is created
+        window.onYouTubeIframeAPIReady = () => {
+            this.player = new YT.Player(this.$refs.video, {
+                events: {
+                    onReady: (event) => {
+                        event.target.mute(); // mute the video for the autoplay to work
+                    },
+                    onStateChange: (event) => {
+                        if (event.data === YT.PlayerState.ENDED) {
+                            this.showVideo = false; // when the video finishes the video is hidden for the image to come out
+                        }
+                    }
+                }
+            });
+        };
+    },
+    playVideo() {
+        this.showVideo = true;
+        this.$nextTick(() => {
+            if (this.player && this.player.playVideo) {
+                this.player.playVideo();
+            }
+        });
+    }
+}"
+    class="border rounded-lg shadow-md p-8 bg-[#2b1b1b] hover:shadow-lg transition duration-300 max-w-6xl mx-auto border-yellow-600/40"
+> {{-- expanded border --}}
 
-    <div class="flex flex-col md:flex-row md:space-x-8 justify-between"> <!-- spread out image and video -->
-        <!-- Image on the left -->
+    {{-- Container with black background; image and video overlap --}}
+    <div class="flex justify-center items-center bg-black w-full h-[32rem] overflow-hidden relative rounded-lg">
         @if($image)
-            <div class="flex-shrink-0 mb-6 md:mb-0 w-80 h-[28rem]"> <!-- set width and height for consistency -->
-                <img src="{{ asset('images/musicals/' . $image) }}" {{-- gets image from folder --}}
-                     alt="{{ $title }}"
-                     class="w-full h-full object-cover rounded-md shadow-md"> <!-- fills container, larger width and height -->
-            </div>
+            <img 
+                src="{{ asset('images/musicals/' . $image) }}" {{-- gets image from folder --}}
+                alt="{{ $title }}"
+                class="w-80 h-[28rem] object-cover rounded-md shadow-md cursor-pointer transition duration-300"
+                x-show="!showVideo"
+                @click="playVideo()"
+            > {{-- fills container, larger width and height --}}
         @endif
 
-<!-- Video on the right -->
-@if(!empty($video))
-    <div class="flex-shrink-0 mb-6 md:mb-0 w-[29rem] h-[28rem]"> <!-- increased width by 5rem -->
-        <div class="w-full h-full rounded-lg overflow-hidden shadow-md"> <!-- match height to image -->
-            <iframe 
-                src="{{ $video }}" {{-- gets video link from database --}}
+        {{-- iframe always exists in DOM so YouTube API can attach events --}}
+        @if(!empty($video))
+            <iframe
+                x-ref="video"
+                x-show="showVideo"
+                x-transition
+                src="{{ $video }}?enablejsapi=1&mute=1" {{-- Video will be both autoplay and muted --}}
                 title="{{ $title }} video"
-                class="w-full h-full rounded-lg"
+                class="absolute w-[50rem] h-[28rem] rounded-lg shadow-md"
+                allow="autoplay; encrypted-media"
                 allowfullscreen
-                loading="lazy">
-            </iframe>
-        </div>
-    </div>
-@endif
-
-
+                loading="lazy"
+            ></iframe>
+        @endif
     </div>
 </div>
 
+{{-- Musical Info Below Image and Video --}}
+<div class="mt-8">
+    {{-- Title --}}
+    <h1 class="font-bold text-[#f2c94c] mb-3 text-3xl">{{ $title }}</h1> {{-- slightly larger title --}}
 
-    <!-- Musical Info Below Image and Video -->
-    <div class="mt-8">
-        <!-- Title -->
-        <h1 class="font-bold text-[#f2c94c] mb-3 text-3xl">{{ $title }}</h1> <!-- slightly larger title -->
+    {{-- Director --}}
+    @if($director)
+        <h2 class="text-[#f2c94c] text-base italic mb-3">Directed by: {{ $director }}</h2> {{-- displays Director --}}
+    @endif
 
-        <!-- Director -->
-        @if($director)
-            <h2 class="text-[#f2c94c] text-base italic mb-3">Directed by: {{ $director }}</h2> <!-- displays Director -->
-        @endif
+    {{-- Premiere Date and Duration on the same line --}}
+    @if($premiere_date || $duration)
+        <div class="flex flex-wrap justify-between text-[#f2c94c] text-sm italic mb-5">
+            @if($premiere_date)
+                <span>Premiere Date: {{ $premiere_date }}</span>
+            @endif
+            @if($duration)
+                <span>Duration: {{ $duration }} minutes</span>
+            @endif
+        </div> {{-- displays premiere date and duration on the same line --}}
+    @endif
 
-        <!-- Premiere Date and Duration on the same line -->
-        @if($premiere_date || $duration)
-            <div class="flex flex-wrap justify-between text-[#f2c94c] text-sm italic mb-5">
-                @if($premiere_date)
-                    <span>Premiere Date: {{ $premiere_date }}</span>
-                @endif
-                @if($duration)
-                    <span>Duration: {{ $duration }} minutes</span>
-                @endif
-            </div> <!-- displays premiere date and duration on the same line -->
-        @endif
-
-        <!-- Description -->
-        @if($description)
-            <h3 class="text-[#f2c94c] font-semibold mb-2 text-xl">Description</h3>
-            <p class="text-gray-200 leading-relaxed">{{ $description }}</p> <!-- displays description -->
-        @endif
-    </div>
+    {{-- Description --}}
+    @if($description)
+        <h3 class="text-[#f2c94c] font-semibold mb-2 text-xl">Description</h3>
+        <p class="text-gray-200 leading-relaxed">{{ $description }}</p> {{-- displays description --}}
+    @endif
 </div>
