@@ -45,6 +45,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('musical.index', absolute: false));
+        return redirect(route('musicals.index', absolute: false));
     }
 }
