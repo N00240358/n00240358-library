@@ -18,9 +18,12 @@
                     <x-nav-link :href="route('musicals.index')" :active="request()->routeIs('musicals.index')"> {{-- a link to the musicals index which is using the All() method --}}
                         {{ __('View All Musicals') }}
                     </x-nav-link>
+
+                    @if(auth()->user()->role === 'admin') 
                     <x-nav-link :href="route('musicals.create')" :active="request()->routeIs('musicals.create')"> {{-- a link to the musicals create that links to the musical form --}}
                         {{ __('Create New Musicals') }}
                     </x-nav-link>
+                    @endif
                 </div>
             </div>
 

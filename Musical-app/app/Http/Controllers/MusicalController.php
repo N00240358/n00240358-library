@@ -22,6 +22,9 @@ class MusicalController extends Controller
      */
     public function create()
     {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('musicals.index')->with('error', 'Access denied.');
+        }
         return view('musicals.create'); // when clicked on moves the user to the create view
     }
 
@@ -79,6 +82,9 @@ class MusicalController extends Controller
      */
     public function edit(Musical $musical)
     {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('musicals.index')->with('error', 'Access denied.');
+        }
         return view('musicals.edit')->with('musical', $musical); //brings you to the form with the correct id to edit
     }
 
@@ -128,6 +134,9 @@ class MusicalController extends Controller
      */
     public function destroy(Musical $musical)
 {
+    if (auth()->user()->role !== 'admin') {
+            return redirect()->route('musicals.index')->with('error', 'Access denied.');
+    }
     // get url to image folder
     $imagePath = public_path('images/musicals/' . $musical->image);
 

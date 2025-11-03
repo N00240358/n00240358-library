@@ -27,6 +27,7 @@
                                     />
                                 </a>
 
+                                @if(auth()->user()->role === 'admin') 
                                 {{-- Edit and Delete Buttons --}}
                                 <div class="mt-4 flex justify-between">
                                     <!-- Edit Button -->
@@ -71,6 +72,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                @endif
                             </div>
                         @endforeach
                     </div>
