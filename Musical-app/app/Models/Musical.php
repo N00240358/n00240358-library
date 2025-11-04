@@ -18,4 +18,9 @@ class Musical extends Model
         'director',
         'video'
     ];
+
+    public function songs()
+    {
+        return $this->hasMany(Song::class);
+    }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MusicalController;
+use App\Http\Controllers\SongController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -28,5 +29,11 @@ Route::post('/musicals', [MusicalController::class, 'store'])->name('musicals.st
 Route::get('/musicals/{musical}/edit', [MusicalController::class, 'edit'])->name('musicals.edit'); // using the Musical Controller to goto edit.
 Route::put('/musicals/{musical}', [MusicalController::class, 'update'])->name('musicals.update'); // using the Musical Controller to goto update.
 Route::delete('/musicals/{musical}', [MusicalController::class, 'destroy'])->name('musicals.destroy'); // using the Musical Controller to goto destroy/delete.
+
+// Code below creates all routes for songs
+Route::resource('songs', SongController::class);
+
+//overwrite store request
+Route::post('musicals/{musical}/songs', [SongController::class, 'store'])->name('songs.store');
 
 require __DIR__.'/auth.php';

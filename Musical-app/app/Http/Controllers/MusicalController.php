@@ -74,7 +74,9 @@ class MusicalController extends Controller
      */
     public function show(Musical $musical)
     {
-        return view('musicals.show')->with('musical', $musical); //when you click on a musical it takes you to the show view and shows the details of that musical
+        $musical->load('songs');
+        return view('musicals.show', compact('musical'));
+        // return view('musicals.show')->with('musical', $musical); //when you click on a musical it takes you to the show view and shows the details of that musical
     }
 
     /**
