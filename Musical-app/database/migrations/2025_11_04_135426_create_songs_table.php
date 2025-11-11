@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('musical_id')->constrained()->onDelete('cascade');
             $table->string('title');
-            $table->integer('duration');
+            $table->decimal('duration', 5, 2);
             $table->string('composer');
             $table->timestamps();
         });

@@ -30,10 +30,12 @@ Route::get('/musicals/{musical}/edit', [MusicalController::class, 'edit'])->name
 Route::put('/musicals/{musical}', [MusicalController::class, 'update'])->name('musicals.update'); // using the Musical Controller to goto update.
 Route::delete('/musicals/{musical}', [MusicalController::class, 'destroy'])->name('musicals.destroy'); // using the Musical Controller to goto destroy/delete.
 
-// Code below creates all routes for songs
-Route::resource('songs', SongController::class);
-
-//overwrite store request
+// Nested song routes first
+Route::get('musicals/{musical}/songs/create', [SongController::class, 'create'])->name('songs.create');
 Route::post('musicals/{musical}/songs', [SongController::class, 'store'])->name('songs.store');
+
+// Resource routes for songs (index, edit, update, destroy, show)
+Route::resource('songs', SongController::class)->except(['create','store']);
+
 
 require __DIR__.'/auth.php';

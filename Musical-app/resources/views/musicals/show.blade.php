@@ -22,64 +22,92 @@
                         :video="$musical->video" {{-- pulls the video from the database with the correct id --}}
                     />
 
-                    {{-- All Songs --}}
-                    <h4 class="font-semibold text-md mt-8">Songs</h4>
-                    @if($musical->songs->isEmpty())
-                        <p class="mt-2">No songs available for this musical.</p>
-                    @else
-                        <ul class="mt-4 space-y-4">
-                            @foreach($musical->songs as $song)
-                            <li class="bg-gray-100 p-4 rounded-lg">
-                                <p class="font-semibold">{{ $song->title }}</p>
-                                <p>Composer: {{ $song->composer }}</p>
-                                <p>Duration: {{  $song->duration }}</p>
+{{-- All Songs --}}
+<h4 class="font-semibold text-lg mt-8 mb-4 text-[#f2c94c] border-b border-yellow-600/40 pb-2">Songs</h4>
 
-@if (auth()->user()->role === 'admin')
-<div class="flex gap-4 mt-2">
-    <a href="{{ route('songs.edit', $song) }}" 
-       class="bg-yellow-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded">
-        {{ __('Edit Song') }}
+{{-- Add new Song --}}
+<div class="mt-6 mb-4">
+    <a href="{{ route('songs.create', $musical) }}"
+       class="inline-flex items-center px-4 py-2 bg-yellow-500 hover:bg-orange-700 text-white font-bold rounded-lg shadow-md transition">
+       + Add New Song
     </a>
-    <form method="POST" action="{{ route('songs.destroy', $song) }}">
-        @csrf
-        @method('delete')
-        <x-danger-button :href="route('songs.destroy', $song)"
-            onclick="event.preventDefault(); this.closest('form').submit();">
-            {{ __('Delete Song') }}
-        </x-danger-button>
-    </form>
+</div>
+
+@if($musical->songs->isEmpty())
+    <p class="text-gray-300">No songs available for this musical.</p>
+@else
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" x-data="{ openSong: null }">
+    @foreach($musical->songs as $song)
+        <div class="bg-[#1f1f1f] border border-yellow-700/40 rounded-xl shadow-md hover:shadow-yellow-600/20 transition transform hover:-translate-y-1 duration-300 self-start">
+
+            {{-- Song Header --}}
+            <div class="p-5 cursor-pointer"
+                 @click="openSong = (openSong === {{ $song->id }} ? null : {{ $song->id }})">
+                <p class="font-bold text-lg text-[#f2c94c] truncate">{{ $song->title }}</p>
+            </div>
+
+            {{-- Collapsible content --}}
+            <div x-show="openSong === {{ $song->id }}"
+                 x-transition:enter="transition-all duration-300 ease-out"
+                 x-transition:enter-start="max-h-0 opacity-0"
+                 x-transition:enter-end="max-h-96 opacity-100"
+                 x-transition:leave="transition-all duration-300 ease-in"
+                 x-transition:leave-start="max-h-96 opacity-100"
+                 x-transition:leave-end="max-h-0 opacity-0"
+                 style="overflow:hidden;"
+                 class="px-5 pb-5 text-gray-200">
+
+                <p class="text-gray-300 mb-3"><span class="font-semibold">Composer:</span> {{ $song->composer }}</p>
+                <p class="text-gray-300"><span class="font-semibold">Duration:</span> {{ $song->duration }} Minutes</p>
+
+                @if(auth()->user()->role === 'admin')
+                    <div class="flex justify-between gap-4 mt-3">
+                        <!-- Edit Button -->
+                        <a href="{{ route('songs.edit', $song) }}"
+                           class="flex-1 bg-[#f2c94c] hover:bg-yellow-400 text-[#2b1b1b] font-bold py-2 px-4 rounded-lg shadow-md transition text-center">
+                            Edit
+                        </a>
+
+                        <!-- Delete Button with Modal -->
+                        <div x-data="{ openModal: false }" class="flex-1">
+                            <button @click.stop="openModal = true"
+                                    class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition">
+                                Delete
+                            </button>
+
+                            <div x-show="openModal"
+                                 class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                                 x-transition>
+                                <div @click.away="openModal = false"
+                                     class="bg-[#2b1b1b] text-white rounded-lg shadow-lg p-6 w-96">
+                                    <h2 class="text-xl font-bold mb-4">Confirm Deletion</h2>
+                                    <p class="mb-6">Are you sure you want to delete this song? This action cannot be undone.</p>
+                                    <div class="flex justify-end space-x-4">
+                                        <button @click="openModal = false"
+                                                class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded font-bold">
+                                            Cancel
+                                        </button>
+                                        <form action="{{ route('songs.destroy', $song) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                    class="px-4 py-2 bg-red-500 hover:bg-red-600 rounded font-bold">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+            </div>
+        </div>
+    @endforeach
 </div>
 @endif
-
-                            </li>
-                            @endforeach
-                        </ul>
-                    @endif
-
-                    {{-- Add new Song --}}
-                    <h4 class="font-semibold text-md mt-8">Add a Song</h4>
-                    <form action="{{ route('songs.store', $musical) }}" method="POST" class="mt-4">
-                        @csrf
-                        <div class="mb-4">
-                            <label for="title" class="block font-medium texxt-sm text-gray-700">Title</label>
-                            <textarea name="title" id="title" rows="3" class="mt-1 block w-full"></textarea>
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="composer" class="block font-medium texxt-sm text-gray-700">Composer</label>
-                            <textarea name="composer" id="composer" rows="3" class="mt-1 block w-full"></textarea>
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="duration" class="block font-medium texxt-sm text-gray-700">Duration</label>
-                            <textarea name="duration" id="duration" rows="3" class="mt-1 block w-full"></textarea>
-                        </div>
-
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Add Song
-                        </button>
-                    </form>
-                </div>
+               </div>
             </div>
         </div>
     </div>

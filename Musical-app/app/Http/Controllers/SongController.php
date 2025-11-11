@@ -9,91 +9,93 @@ use Illuminate\Http\Request;
 class SongController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Show the form for creating a new song for a musical.
      */
-    public function index()
+    public function create(Musical $musical)
     {
-        //
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('musicals.index')->with('error', 'Access denied.');
+        }
+
+        return view('songs.create', compact('musical')); // Pass the musical to the view
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Store a newly created song in storage.
      */
     public function store(Request $request, Musical $musical)
     {
-        // dd($musical);
-        $request->validate([
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('musicals.show', $musical)
+                             ->with('error', 'Access denied.');
+        }
+
+        // Validate input
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'duration' => 'required|integer|min:1|max:60',
+            'duration' => 'required|numeric|min:0.01|max:60',
             'composer' => 'required|string|max:255',
         ]);
 
-        // $musical->songs()->create([
-        //     'title' => $request->input('title'),
-        //     'duration' => $request->input('duration'),
-        //     'composer' => $request->input('composer')
-        // ]);
+        // Create the song associated with this musical
+        $musical->songs()->create($validated);
 
-        $musical->songs()->create($request->only('title', 'duration', 'composer'));
-
-        return redirect()->route('musicals.show', $musical)->with('success', 'Song added successfully.');
-
-        }
-    
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Song $song)
-    {
-        //
+        // Redirect back to the musical's show page
+        return redirect()->route('musicals.show', $musical)
+                         ->with('success', 'Song added successfully.');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing a song.
      */
     public function edit(Song $song)
     {
-        if (auth()->user()->role !== 'admin'){
-            return redirect()->route('musicals.index')->with('error', 'Access denied.');
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('musicals.show', $song->musical)
+                             ->with('error', 'Access denied.');
         }
 
-        return view('songs.edit', compact('song'));
+        $musical = $song->musical;
+        return view('songs.edit', compact('song', 'musical'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update a song.
      */
     public function update(Request $request, Song $song)
     {
-        if (auth()->user()->role !== 'admin'){
-            return redirect()->route('musicals.index')->with('error', 'Access denied.');
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('musicals.show', $song->musical)
+                             ->with('error', 'Access denied.');
         }
 
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'duration' => 'required|integer|min:1|max:60',
+            'duration' => 'required|numeric|min:0.01|max:60',
             'composer' => 'required|string|max:255',
         ]);
 
-        $song->update($request->only('title', 'duration', 'composer'));
+        $song->update($validated);
 
-        return redirect()->route('musicals.show', $song->musical_id)->with('success', 'Song updated successfully.');
+        return redirect()->route('musicals.show', $song->musical)
+                         ->with('success', 'Song updated successfully.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove a song.
      */
     public function destroy(Song $song)
     {
-        //
+        $musical = $song->musical;
+
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('musicals.show', $musical)
+                             ->with('error', 'Access denied.');
+        }
+
+        $song->delete();
+
+        return redirect()->route('musicals.show', $musical)
+                         ->with('success', 'Song deleted successfully.');
     }
 }
