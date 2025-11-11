@@ -19,8 +19,15 @@ class Musical extends Model
         'video'
     ];
 
+    // A Musical has many Songs - One-to-Many Relationship
     public function songs()
     {
         return $this->hasMany(Song::class);
+    }
+
+    // Musicals can have many Actors - Many-to-Many Relationship
+    public function actors()
+    {
+        return $this->belongsToMany(Actor::class);
     }
 }

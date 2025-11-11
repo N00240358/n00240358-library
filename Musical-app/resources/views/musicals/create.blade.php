@@ -5,11 +5,11 @@
             <div class="bg-[#2b1b1b] overflow-hidden shadow-sm sm:rounded-lg border border-yellow-600/40">
                 <div class="p-6 text-white">
                     <h3 class="font-semibold text-lg mb-4 text-[#f2c94c]">Add a New Musical:</h3>
-
-                    <x-musical-form
-                        :action="route('musicals.store')" {{-- routes to the store method in the MusicalController to then the Musical Form --}}
-                        :method="'POST'"
-                    />
+                        <x-musical-form
+                            :action="route('musicals.store')"
+                            :method="'POST'"
+                            :actors="$actors"  {{-- Pass the list of actors --}}
+                        />
                 </div>
             </div>
         </div>

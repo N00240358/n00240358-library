@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Musical;
+use App\Models\Actor;
 use Illuminate\Http\Request;
 use illuminate\Support\Facades\Storage;
 
@@ -25,7 +26,8 @@ class MusicalController extends Controller
         if (auth()->user()->role !== 'admin') {
             return redirect()->route('musicals.index')->with('error', 'Access denied.');
         }
-        return view('musicals.create'); // when clicked on moves the user to the create view
+            $actors = Actor::all();
+            return view('musicals.create', compact('actors')); // when clicked on moves the user to the create view
     }
 
     /**
@@ -54,6 +56,11 @@ class MusicalController extends Controller
             $imagePath = 'images/musicals/' . $imageName; // stores image URL to database
         }
 
+        $musical = Musical::create($data);  
+        if ($request->has('actors')) {
+            $musical->actors()->sync($request->actors); // attach actors
+        }
+
         // Create a musical record in the database put data into the database
         Musical::create([
             'title' => $request->title,
@@ -74,7 +81,7 @@ class MusicalController extends Controller
      */
     public function show(Musical $musical)
     {
-        $musical->load('songs');
+        $musical->load('songs', 'actors');
         return view('musicals.show', compact('musical'));
         // return view('musicals.show')->with('musical', $musical); //when you click on a musical it takes you to the show view and shows the details of that musical
     }
@@ -87,7 +94,9 @@ class MusicalController extends Controller
         if (auth()->user()->role !== 'admin') {
             return redirect()->route('musicals.index')->with('error', 'Access denied.');
         }
-        return view('musicals.edit')->with('musical', $musical); //brings you to the form with the correct id to edit
+            $actors = Actor::all();
+            $musical->load('actors');
+            return view('musicals.edit', compact('musical', 'actors')); //brings you to the form with the correct id to edit
     }
 
     /**
@@ -95,15 +104,18 @@ class MusicalController extends Controller
      */
    public function update(Request $request, Musical $musical)
 { 
-    $request->validate([ //validation is the same as store
-        'title' => 'required|string|max:255',
-        'description' => 'required|string|max:500',
-        'premiere_date' => 'required|date',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // is now nullable as if not it requires you to unput the same image again or a different one.
-        'duration' => 'required|integer|min:1|max:600',
-        'director' => 'required|string|max:100',
-        'video' => 'nullable|string|max:255',
-    ]);
+$data = $request->validate([
+    'title' => 'required|string|max:100',
+    'description' => 'required|string|max:1000',
+    'premiere_date' => 'required|string|max:20',
+    'duration' => 'required|integer|min:1|max:600',
+    'director' => 'required|string|max:100',
+    'video' => 'nullable|string|max:255',
+]);
+
+$musical->update($data);
+$musical->actors()->sync($request->actors ?? []); // sync actors
+
 
     // Handle image if uploaded
     if ($request->hasFile('image')) {

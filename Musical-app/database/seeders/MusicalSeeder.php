@@ -3,12 +3,17 @@
 namespace Database\Seeders;
 
 use App\Models\Musical;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Actor;
 use Illuminate\Database\Seeder;
+use Carbon\Carbon;
 
-class MusicalSeeder extends Seeder{
-    public function run(): void{
-        Musical::insert([ //inserts experiment data into the database to check if things are working.
+class MusicalSeeder extends Seeder
+{
+    public function run(): void
+    {
+        $currentTimestamp = Carbon::now();
+
+        $musicals = [
             [
                 'title' => 'Hamilton',
                 'image' => 'Hamilton.jpg',
@@ -36,6 +41,17 @@ class MusicalSeeder extends Seeder{
                 'premiere_date' => '2003-10-30',
                 'video' => 'https://www.youtube.com/watch?v=6COmYeLsz4c',
             ],
-        ]);
+        ];
+
+        foreach ($musicals as $musicalData) {
+            $musical = Musical::create(array_merge(
+                $musicalData,
+                ['created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp]
+            ));
+
+            // Make sure you have ActorSeeder run first (see fix below)
+            $actors = Actor::inRandomOrder()->take(2)->pluck('id');
+            $musical->actors()->attach($actors);
+        }
     }
 }

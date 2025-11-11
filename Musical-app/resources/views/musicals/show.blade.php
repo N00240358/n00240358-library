@@ -22,6 +22,25 @@
                         :video="$musical->video" {{-- pulls the video from the database with the correct id --}}
                     />
 
+                    {{-- Actors --}}
+<h4 class="font-semibold text-lg mt-8 mb-4 text-[#f2c94c] border-b border-yellow-600/40 pb-2">Actors</h4>
+
+@if($musical->actors->isEmpty())
+    <p class="text-gray-300">No actors associated with this musical.</p>
+@else
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        @foreach($musical->actors as $actor)
+            <div class="bg-[#1f1f1f] border border-yellow-700/40 rounded-xl shadow-md p-4 text-gray-200">
+                <p class="font-bold text-[#f2c94c]">{{ $actor->name }}</p>
+                @if($actor->role)
+                    <p class="text-gray-300 text-sm">{{ $actor->role }}</p>
+                @endif
+            </div>
+        @endforeach
+    </div>
+@endif
+
+
 {{-- All Songs --}}
 <h4 class="font-semibold text-lg mt-8 mb-4 text-[#f2c94c] border-b border-yellow-600/40 pb-2">Songs</h4>
 

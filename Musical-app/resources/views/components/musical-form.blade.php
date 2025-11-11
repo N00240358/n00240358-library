@@ -1,4 +1,4 @@
-@props(['action', 'method', 'musical']) <!-- gets action, method, and musical as properties to call from the database -->
+@props(['action', 'method', 'musical' => null, 'actors' => []]) <!-- gets action, method, and musical as properties to call from the database -->
 
 <form action="{{ $action }}" method="POST" enctype="multipart/form-data"> {{-- form to create or edit a musical --}}
     @csrf
@@ -127,6 +127,19 @@
         <img src="{{ asset('images/musicals/' .$musical->image) }}" alt="Musical cover" class="w-24 h-32 object-cover"> <!-- displays current image when editing to check if the image is correct-->  
     </div>
     @endisset
+
+    <div class="mb-4">
+    <label class="block text-sm text-white mb-2">Actors</label>
+    @foreach($actors as $actor)
+        <label class="inline-flex items-center mr-4 mb-2">
+            <input type="checkbox" name="actors[]" value="{{ $actor->id }}"
+                @if(isset($musical) && $musical->actors->contains($actor->id)) checked @endif
+                class="form-checkbox text-yellow-500"
+            >
+            <span class="ml-2 text-white">{{ $actor->name }}</span>
+        </label>
+    @endforeach
+</div>
 
     <div class="flex space-x-4 mt-4">
         <x-primary-button>

@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MusicalController;
 use App\Http\Controllers\SongController;
+use App\Http\Controllers\ActorController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,5 +38,6 @@ Route::post('musicals/{musical}/songs', [SongController::class, 'store'])->name(
 // Resource routes for songs (index, edit, update, destroy, show)
 Route::resource('songs', SongController::class)->except(['create','store']);
 
+Route::resource('actors', ActorController::class)->middleware('auth');
 
 require __DIR__.'/auth.php';

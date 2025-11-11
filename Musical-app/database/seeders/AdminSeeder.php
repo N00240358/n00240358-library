@@ -5,19 +5,21 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 class AdminSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run()
     {
-        User::created([
+        $currentTimestamp = Carbon::now();
+
+        User::create([
             'name' => 'Admin User',
-            'email' => 'admin' . time() . '@example.com', //Faking a unique email using timestamp
-            'password' => Hash::make('password'), //Password is hashed for security
+            'email' => 'admin' . time() . '@example.com',
+            'password' => Hash::make('password'),
             'role' => 'admin',
+            'created_at' => $currentTimestamp,
+            'updated_at' => $currentTimestamp,
         ]);
     }
 }

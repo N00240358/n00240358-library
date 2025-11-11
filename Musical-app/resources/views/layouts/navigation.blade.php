@@ -24,6 +24,16 @@
                         {{ __('Create New Musicals') }}
                     </x-nav-link>
                     @endif
+
+                    <x-nav-link :href="route('actors.index')" :active="request()->routeIs('actors.index')"> {{-- a link to the actors index which is using the All() method --}}
+                        {{ __('View All Actors') }}
+                    </x-nav-link>
+
+                    @if(auth()->user()->role === 'admin') 
+                    <x-nav-link :href="route('actors.create')" :active="request()->routeIs('actors.create')"> {{-- a link to the actors create that links to the musical form --}}
+                        {{ __('Create New Actor') }}
+                    </x-nav-link>
+                    @endif
                 </div>
             </div>
 
