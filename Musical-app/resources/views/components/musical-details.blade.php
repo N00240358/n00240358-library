@@ -77,23 +77,33 @@ x-data="{
 {{-- Musical Info Below Image and Video --}}
 <div class="mt-8">
     {{-- Title --}}
-    <h1 class="font-bold text-[#f2c94c] mb-3 text-3xl">{{ $title }}</h1> {{-- slightly larger title --}}
+    <h1 class="font-bold text-gray-200 mb-3 text-3xl">{{ $title }}</h1> {{-- slightly larger title --}}
 
     {{-- Director --}}
     @if($director)
-        <h2 class="text-[#f2c94c] text-base italic mb-3">Directed by: {{ $director }}</h2> {{-- displays Director --}}
+        <h2 class="text-[#f2c94c] text-base italic mb-3">
+            Directed by:
+            <span class="text-gray-200">{{ $director }}</span>
+        </h2>
     @endif
 
     {{-- Premiere Date and Duration on the same line --}}
     @if($premiere_date || $duration)
-        <div class="flex flex-wrap justify-between text-[#f2c94c] text-sm italic mb-5">
+        <div class="flex flex-wrap justify-between text-sm italic mb-5">
             @if($premiere_date)
-                <span>Premiere Date: {{ $premiere_date }}</span>
+                <span class="text-[#f2c94c]">
+                    Premiere Date:
+                    <span class="text-gray-200">{{ $premiere_date }}</span>
+                </span>
             @endif
+
             @if($duration)
-                <span>Duration: {{ $duration }} minutes</span>
+                <span class="text-[#f2c94c]">
+                    Duration:
+                    <span class="text-gray-200">{{ $duration }} Minutes</span>
+                </span>
             @endif
-        </div> {{-- displays premiere date and duration on the same line --}}
+        </div>
     @endif
 
     {{-- Description --}}

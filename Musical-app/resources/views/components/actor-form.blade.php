@@ -50,18 +50,23 @@
     </div>
 
     <div class="mb-4">
-    <label class="block text-sm text-white mb-2">Musicals</label>
-    @foreach($musicals as $musical)
-        <label class="inline-flex items-center mr-4">
-            <input type="checkbox" name="musicals[]" value="{{ $musical->id }}"
-                @if(isset($actorMusical) && in_array($musical->id, $actorMusical)) checked @endif
-                class="form-checkbox text-yellow-500"
-            >
-            <span class="ml-2 text-white">{{ $musical->title }}</span>
-        </label>
-    @endforeach
-</div>
+        <label for="musicals" class="block text-sm text-white mb-2">Musicals</label>
 
+        <select id="musicals" name="musicals[]" multiple class="w-2/3 bg-[#2b1b1b] text-white">
+            @foreach($musicals as $musical)
+                <option 
+                    value="{{ $musical->id }}"
+                    @if(isset($actorMusical) && in_array($musical->id, $actorMusical)) selected @endif
+                >
+                    {{ $musical->title }}
+                </option>
+            @endforeach
+        </select>
+
+        @error('musicals')
+            <p class="text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
 
     <div class="flex space-x-4 mt-4">
         <x-primary-button>
@@ -74,3 +79,15 @@
         </a>
     </div>
 </form>
+
+@push('scripts')
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    new TomSelect("#musicals", {
+        plugins: ['remove_button'],
+        maxItems: null, // allows multiple selections
+        placeholder: "Search & select musicals...",
+    });
+});
+</script>
+@endpush

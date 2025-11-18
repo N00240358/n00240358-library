@@ -13,6 +13,9 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- TomSelect CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
     </head>
     <body class="font-sans antialiased bg-[#1a1a1a] text-gray-100">
         <div class="min-h-screen bg-gradient-to-b from-[#1a1a1a] to-[#2c2c2c]">
@@ -33,5 +36,8 @@
                 {{ $slot }}
             </main>
         </div>
+        <!-- TomSelect JS -->
+        <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+        @stack('scripts')
     </body>
 </html>

@@ -43,7 +43,7 @@
 
 {{-- All Songs --}}
 <h4 class="font-semibold text-lg mt-8 mb-4 text-[#f2c94c] border-b border-yellow-600/40 pb-2">Songs</h4>
-
+@if(auth()->user()->role === 'admin')
 {{-- Add new Song --}}
 <div class="mt-6 mb-4">
     <a href="{{ route('songs.create', $musical) }}"
@@ -51,6 +51,7 @@
        + Add New Song
     </a>
 </div>
+@endif
 
 @if($musical->songs->isEmpty())
     <p class="text-gray-300">No songs available for this musical.</p>
@@ -76,9 +77,14 @@
                  style="overflow:hidden;"
                  class="px-5 pb-5 text-gray-200">
 
-                <p class="text-gray-300 mb-3"><span class="font-semibold">Composer:</span> {{ $song->composer }}</p>
-                <p class="text-gray-300"><span class="font-semibold">Duration:</span> {{ $song->duration }} Minutes</p>
-
+                <p class="text-gray-300 mb-3"><span class="font-semibold">Artists:</span> {{ $song->composer }}</p>
+                
+                @php
+                    $minutes = floor($song->duration);
+                    $seconds = ($song->duration - $minutes) * 100;
+                @endphp
+                <p class="text-gray-300"><span class="font-semibold">Duration: </span>{{ $minutes }} Minutes {{ $seconds }} Seconds</p>
+            
                 @if(auth()->user()->role === 'admin')
                     <div class="flex justify-between gap-4 mt-3">
                         <!-- Edit Button -->

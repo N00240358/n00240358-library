@@ -15,9 +15,18 @@ class AdminSeeder extends Seeder
 
         User::create([
             'name' => 'Admin User',
-            'email' => 'admin' . time() . '@example.com',
+            'email' => 'admin@example.com',
             'password' => Hash::make('password'),
             'role' => 'admin',
+            'created_at' => $currentTimestamp,
+            'updated_at' => $currentTimestamp,
+        ]);
+
+        User::create([
+            'name' => 'User User',
+            'email' => 'user@example.com',
+            'password' => Hash::make('password'),
+            'role' => 'user',
             'created_at' => $currentTimestamp,
             'updated_at' => $currentTimestamp,
         ]);

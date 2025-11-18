@@ -34,47 +34,47 @@ class MusicalController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        // Validate input
-        $request->validate([
-            'title' => 'required|string|max:255', // title is required, is a string with a max length of 255
-            'description' => 'required|string|max:500', // description is required, is a string with a max length of 500
-            'premiere_date' => ['required','regex:/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/'], // premiere date is required and regex is for YYYY-MM-DD
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // image is requried, has to be an image and be one of the types given and max size of 2048kb
-            'duration' => 'required|integer|min:1|max:600', // duration is required, needs to be between 1 and 600 minutes and an integer
-            'director' => 'required|string|max:100', // director is required, max length of 100 and a string
-            'video' => 'nullable|string|max:255', // video is not required, max length of 255 and a string
-        ]);
+{
+    // Validate input
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string|max:500',
+        'premiere_date' => ['required','regex:/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/'],
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'duration' => 'required|integer|min:1|max:600',
+        'director' => 'required|string|max:100',
+        'video' => 'nullable|string|max:255',
+    ]);
 
+    // Handle image upload
+    $imageName = null;
 
-        $imagePath = null;
-        // Check if the image is uploaded
-        if ($request->hasFile('image')) {
-
-            $imageName = time().'.'.$request->image->extension(); // names image using current time
-            $request->image->move(public_path('images/musicals'), $imageName); //puts image in the correct folder
-            $imagePath = 'images/musicals/' . $imageName; // stores image URL to database
-        }
-
-        $musical = Musical::create($data);  
-        if ($request->has('actors')) {
-            $musical->actors()->sync($request->actors); // attach actors
-        }
-
-        // Create a musical record in the database put data into the database
-        Musical::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'premiere_date' => $request->premiere_date,
-            'image' => $imageName,
-            'duration' => $request->duration,
-            'director' => $request->director,
-            'video' => $request->video
-        ]);
-
-        //Redirect to the index page when successful with message
-        return to_route('musicals.index')->with('success', 'Musical created successfully!');
+    if ($request->hasFile('image')) {
+        $imageName = time() . '.' . $request->image->extension();
+        $request->image->move(public_path('images/musicals'), $imageName);
     }
+
+    // Build the data array
+    $data = [
+        'title' => $request->title,
+        'description' => $request->description,
+        'premiere_date' => $request->premiere_date,
+        'image' => $imageName,
+        'duration' => $request->duration,
+        'director' => $request->director,
+        'video' => $request->video,
+    ];
+
+    // Create the musical
+    $musical = Musical::create($data);
+
+    // Sync actors if provided
+    if ($request->has('actors')) {
+        $musical->actors()->sync($request->actors);
+    }
+
+    return redirect()->route('musicals.index')->with('success', 'Musical created successfully!');
+}
 
     /**
      * Display the specified resource.
