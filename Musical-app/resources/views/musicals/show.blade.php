@@ -1,3 +1,6 @@
+<x-alert-success>
+    {{ session('success') }} <!-- displays success message -->
+</x-alert-success>
 <x-app-layout>
     {{-- Styling for the show musical page along with calling the musical details component to display the information of the musical --}}
     <div class="py-12">
@@ -9,6 +12,12 @@
                        class="inline-flex items-center px-4 py-2 bg-gray-700 hover:bg-gray-600 text-[#f2c94c] font-bold rounded-md shadow-md transition">
                         Go Back
                     </a>
+                    <div class="mt-6 mb-4">
+<a href="{{ route('checkout', $musical->id) }}"
+   class="inline-flex items-center px-4 py-2 bg-yellow-500 hover:bg-orange-700 text-white font-bold rounded-lg shadow-md transition">
+    Book Musical
+</a>
+</div>
 
                     {{-- <h3 class="font-semibold text-lg mb-4 text-[#f2c94c]">Musical Details</h3> --}}
 
@@ -39,7 +48,6 @@
         @endforeach
     </div>
 @endif
-
 
 {{-- All Songs --}}
 <h4 class="font-semibold text-lg mt-8 mb-4 text-[#f2c94c] border-b border-yellow-600/40 pb-2">Songs</h4>

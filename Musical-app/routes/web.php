@@ -5,6 +5,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MusicalController;
 use App\Http\Controllers\SongController;
 use App\Http\Controllers\ActorController;
+use Illuminate\Http\Request;
+use App\Models\User;
+use Stripe\Stripe;
+
+Route::get('/check-key', function () {
+    dd(env('STRIPE_SECRET'));
+});
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,18 +26,46 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // --- Stripe Payment Routes ---
+
+    // Show payment form
+// Show checkout form
+Route::get('/checkout/{musical}', function ($musical) {
+    $musical = \App\Models\Musical::findOrFail($musical);
+    return view('checkout', compact('musical')); // <-- use parent view, not component directly
+})->name('checkout');
+
+
+
+Route::post('/checkout/{musical}', function (Request $request, $musical) {
+    $musical = \App\Models\Musical::findOrFail($musical);
+
+    Stripe::setApiKey(env('STRIPE_SECRET'));
+
+    $charge = \Stripe\Charge::create([
+        'amount' => 1000,
+        'currency' => 'usd',
+        'source' => 'tok_visa',
+        'description' => 'Payment for musical: ' . $musical->title,
+    ]);
+
+    return redirect()
+    ->route('musicals.show', $musical)
+    ->with('success', 'Payment successful for ' . $musical->title);
+})->name('checkout.pay');
+
+
 });
 
 // Musical Routes
-
-Route::get('/musicals', [MusicalController::class, 'index'])->name('musicals.index'); // using the Musical Controller to goto index.
-Route::get('/musicals/create', [MusicalController::class, 'create'])->name('musicals.create'); // using the Musical Controller to goto create.
-Route::get('/musicals/{musical}', [MusicalController::class, 'show'])->name('musicals.show'); // using the Musical Controller to goto show.
-Route::post('/musicals', [MusicalController::class, 'store'])->name('musicals.store'); // using the Musical Controller to goto store.
-
-Route::get('/musicals/{musical}/edit', [MusicalController::class, 'edit'])->name('musicals.edit'); // using the Musical Controller to goto edit.
-Route::put('/musicals/{musical}', [MusicalController::class, 'update'])->name('musicals.update'); // using the Musical Controller to goto update.
-Route::delete('/musicals/{musical}', [MusicalController::class, 'destroy'])->name('musicals.destroy'); // using the Musical Controller to goto destroy/delete.
+Route::get('/musicals', [MusicalController::class, 'index'])->name('musicals.index');
+Route::get('/musicals/create', [MusicalController::class, 'create'])->name('musicals.create');
+Route::get('/musicals/{musical}', [MusicalController::class, 'show'])->name('musicals.show');
+Route::post('/musicals', [MusicalController::class, 'store'])->name('musicals.store');
+Route::get('/musicals/{musical}/edit', [MusicalController::class, 'edit'])->name('musicals.edit');
+Route::put('/musicals/{musical}', [MusicalController::class, 'update'])->name('musicals.update');
+Route::delete('/musicals/{musical}', [MusicalController::class, 'destroy'])->name('musicals.destroy');
 
 // Nested song routes first
 Route::get('musicals/{musical}/songs/create', [SongController::class, 'create'])->name('songs.create');
