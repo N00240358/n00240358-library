@@ -129,17 +129,19 @@
     @endisset
 
     <div class="mb-4">
-    <label class="block text-sm text-white mb-2">Actors</label>
-    @foreach($actors as $actor)
-        <label class="inline-flex items-center mr-4 mb-2">
-            <input type="checkbox" name="actors[]" value="{{ $actor->id }}"
-                @if(isset($musical) && $musical->actors->contains($actor->id)) checked @endif
-                class="form-checkbox text-yellow-500"
-            >
-            <span class="ml-2 text-white">{{ $actor->name }}</span>
-        </label>
-    @endforeach
-</div>
+        <label for="actors" class="block text-sm text-white mb-2">Actors</label>
+
+        <select id="actors" name="actors[]" multiple class="w-2/3 bg-[#2b1b1b] text-white">
+            @foreach($actors as $actor)
+                <option 
+                    value="{{ $actor->id }}"
+                    @if(isset($musical) && $musical->actors->contains($actor->id)) selected @endif
+                >
+                    {{ $actor->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
 
     <div class="flex space-x-4 mt-4">
         <x-primary-button>
@@ -152,3 +154,108 @@
         </a>
     </div>
 </form>
+
+<style>
+    #selected-actors-container {
+        margin-top: 1rem;
+        max-height: 5rem;
+        overflow: hidden;
+        transition: max-height 0.28s ease;
+    }
+    #selected-actors-container.expanded {
+        max-height: none;
+    }
+    .selected-actor-item {
+        display: inline-block;
+        background: #444;
+        color: white;
+        padding: 0.35rem 0.65rem;
+        margin: 0.25rem;
+        border-radius: 0.4rem;
+        font-size: 0.85rem;
+        cursor: pointer;
+    }
+    .selected-actor-item:hover {
+        opacity: 0.9;
+    }
+    #toggle-actors {
+        cursor: pointer;
+        color: #f2c94c;
+        font-weight: 700;
+        margin-top: .5rem;
+        display: none;
+    }
+    .ts-control .item { display: none !important; }
+    .ts-control input[type="text"] { opacity: 1 !important; }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    const selectElem = document.querySelector("#actors");
+    if (!selectElem) return;
+
+    const select = new TomSelect("#actors", {
+        plugins: ['remove_button'],
+        maxItems: null,
+        placeholder: "Search & select actors...",
+        hideSelected: true,
+        onItemAdd: updateSelectedActors,
+        onItemRemove: updateSelectedActors,
+    });
+
+    const container = document.createElement("div");
+    container.id = "selected-actors-container";
+
+    const toggleBtn = document.createElement("div");
+    toggleBtn.id = "toggle-actors";
+    toggleBtn.textContent = "See more";
+
+    const selectParent = selectElem.parentNode;
+    selectParent.appendChild(container);
+    selectParent.appendChild(toggleBtn);
+
+    toggleBtn.addEventListener("click", function() {
+        container.classList.toggle("expanded");
+        toggleBtn.textContent = container.classList.contains("expanded") ? "See less" : "See more";
+    });
+
+    function updateSelectedActors() {
+        container.innerHTML = "";
+        const selectedValues = [...select.items];
+
+        selectedValues.forEach(val => {
+            const opt = [...selectElem.options].find(o => o.value == val);
+            const text = opt ? opt.text : val;
+
+            const tag = document.createElement("span");
+            tag.classList.add("selected-actor-item");
+            tag.textContent = text;
+            tag.dataset.value = val;
+
+            tag.addEventListener("click", function(e) {
+                e.preventDefault();
+                select.removeItem(val);
+            });
+
+            container.appendChild(tag);
+        });
+
+        setTimeout(() => {
+            const maxH = parseFloat(getComputedStyle(container).maxHeight) || 80;
+            if (container.scrollHeight > maxH + 2) {
+                toggleBtn.style.display = "block";
+            } else {
+                toggleBtn.style.display = "none";
+                container.classList.remove("expanded");
+                toggleBtn.textContent = "See more";
+            }
+        }, 50);
+    }
+
+    updateSelectedActors();
+
+    const observer = new MutationObserver(updateSelectedActors);
+    observer.observe(selectElem, { attributes: true, subtree: true, attributeFilter: ["selected"] });
+});
+</script>

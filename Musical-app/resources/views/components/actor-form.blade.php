@@ -81,13 +81,152 @@
 </form>
 
 @push('scripts')
+<style>
+    /* preview area below the TomSelect field */
+    #selected-musicals-container {
+        margin-top: 1rem;
+        max-height: 5rem;      /* ~5rem visible */
+        overflow: hidden;
+        transition: max-height 0.28s ease;
+    }
+    #selected-musicals-container.expanded {
+        max-height: none;
+    }
+
+    .selected-musical-item {
+        display: inline-block;
+        background: #444;
+        color: white;
+        padding: 0.35rem 0.65rem;
+        margin: 0.25rem;
+        border-radius: 0.4rem;
+        font-size: 0.85rem;
+        cursor: pointer; /* clickable to remove */
+    }
+
+    .selected-musical-item:hover {
+        opacity: 0.9;
+    }
+
+    #toggle-musicals {
+        cursor: pointer;
+        color: #f2c94c;
+        font-weight: 700;
+        margin-top: .5rem;
+        display: none; /* shown only when needed */
+    }
+
+    /* hide TomSelect's tag visuals inside the control */
+    .ts-control .item { display: none !important; }
+    .ts-control input[type="text"] { opacity: 1 !important; }
+</style>
+
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    new TomSelect("#musicals", {
-        plugins: ['remove_button'],
-        maxItems: null, // allows multiple selections
-        placeholder: "Search & select musicals...",
-    });
+    try {
+        if (typeof TomSelect === 'undefined') {
+            console.error('TomSelect is not loaded. Make sure the TomSelect script is included before this script.');
+            return;
+        }
+
+        const selectElem = document.querySelector("#musicals");
+        if (!selectElem) {
+            console.error('#musicals select element not found in DOM.');
+            return;
+        }
+
+        // Initialize TomSelect
+        const select = new TomSelect("#musicals", {
+            plugins: ['remove_button'],
+            maxItems: null,
+            placeholder: "Search & select musicals...",
+            hideSelected: true,
+            // keep updates in sync via handlers below
+            onItemAdd: () => updateSelectedMusicals(),
+            onItemRemove: () => updateSelectedMusicals(),
+        });
+
+        // Preview container + toggle
+        const container = document.createElement("div");
+        container.id = "selected-musicals-container";
+        const toggleBtn = document.createElement("div");
+        toggleBtn.id = "toggle-musicals";
+        toggleBtn.textContent = "See more";
+        const selectParent = selectElem.parentNode;
+        selectParent.appendChild(container);
+        selectParent.appendChild(toggleBtn);
+
+        // Expand/collapse toggle
+        toggleBtn.addEventListener("click", function() {
+            container.classList.toggle("expanded");
+            toggleBtn.textContent = container.classList.contains("expanded") ? "See less" : "See more";
+        });
+
+        // Build preview from TomSelect's internal items (instant & reliable)
+        function updateSelectedMusicals() {
+            container.innerHTML = "";
+
+            // Use TomSelect's selected values (string array)
+            const selectedValues = Array.isArray(select.items) ? select.items.slice() : [];
+
+            selectedValues.forEach(value => {
+                // find the option text in the native select (fallback safe search)
+                const opt = Array.from(selectElem.options).find(o => String(o.value) === String(value));
+                const text = opt ? opt.text : value;
+
+                const tag = document.createElement("span");
+                tag.classList.add("selected-musical-item");
+                tag.textContent = text;
+                tag.setAttribute('data-value', value);
+
+                // click to remove this musical (immediately updates TomSelect & preview)
+                tag.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const val = this.getAttribute('data-value');
+                    // remove from TomSelect; this will trigger onItemRemove -> updateSelectedMusicals
+                    if (select && typeof select.removeItem === 'function') {
+                        select.removeItem(val);
+                    } else {
+                        // fallback: deselect native option and dispatch change
+                        const nativeOpt = Array.from(selectElem.options).find(o => String(o.value) === String(val));
+                        if (nativeOpt) {
+                            nativeOpt.selected = false;
+                            selectElem.dispatchEvent(new Event('change', { bubbles: true }));
+                            updateSelectedMusicals();
+                        }
+                    }
+                });
+
+                container.appendChild(tag);
+            });
+
+            // show toggle only when content exceeds visible area
+            setTimeout(() => {
+                const computed = getComputedStyle(container);
+                // parse max-height (if 'none' treat small)
+                const maxH = computed.maxHeight === 'none' ? 9999 : parseFloat(computed.maxHeight) || 80;
+                if (container.scrollHeight > maxH + 2) {
+                    toggleBtn.style.display = "block";
+                } else {
+                    toggleBtn.style.display = "none";
+                    // also ensure collapsed state when not needed
+                    container.classList.remove("expanded");
+                    toggleBtn.textContent = "See more";
+                }
+            }, 50);
+        }
+
+        // initial render (handles preselected items on edit page)
+        updateSelectedMusicals();
+
+        // Defensive MutationObserver: keep preview up-to-date if something else changes native <select>
+        const observer = new MutationObserver(() => updateSelectedMusicals());
+        observer.observe(selectElem, { attributes: true, subtree: true, attributeFilter: ['selected'] });
+        window.addEventListener('beforeunload', () => observer.disconnect());
+
+    } catch (err) {
+        console.error('Error initializing TomSelect preview area:', err);
+    }
 });
 </script>
 @endpush
