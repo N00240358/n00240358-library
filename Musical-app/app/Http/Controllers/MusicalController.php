@@ -99,22 +99,22 @@ class MusicalController extends Controller
             return view('musicals.edit', compact('musical', 'actors')); //brings you to the form with the correct id to edit
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-   public function update(Request $request, Musical $musical)
-{ 
-$data = $request->validate([
-    'title' => 'required|string|max:100',
-    'description' => 'required|string|max:1000',
-    'premiere_date' => 'required|string|max:20',
-    'duration' => 'required|integer|min:1|max:600',
-    'director' => 'required|string|max:100',
-    'video' => 'nullable|string|max:255',
-]);
+        /**
+         * Update the specified resource in storage.
+         */
+    public function update(Request $request, Musical $musical)
+    { 
+    $data = $request->validate([
+        'title' => 'required|string|max:100',
+        'description' => 'required|string|max:1000',
+        'premiere_date' => 'required|string|max:20',
+        'duration' => 'required|integer|min:1|max:600',
+        'director' => 'required|string|max:100',
+        'video' => 'nullable|string|max:255',
+    ]);
 
-$musical->update($data);
-$musical->actors()->sync($request->actors ?? []); // sync actors
+    $musical->update($data);
+    $musical->actors()->sync($request->actors ?? []); // sync actors
 
 
     // Handle image if uploaded

@@ -34,6 +34,10 @@
                         {{ __('Create New Actor') }}
                     </x-nav-link>
                     @endif
+
+                    <x-nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets.index')"> {{-- a link to the tickets index which is using the filtering by user id to find only their tickets --}}
+                        {{ __('See Your Tickets') }} 
+                    </x-nav-link>
                 </div>
             </div>
 

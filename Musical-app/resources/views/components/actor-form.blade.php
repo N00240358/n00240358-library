@@ -80,6 +80,8 @@
     </div>
 </form>
 
+
+{{-- All the code and styling for the TomSelect to Work. --}}
 @push('scripts')
 <style>
     /* preview area below the TomSelect field */

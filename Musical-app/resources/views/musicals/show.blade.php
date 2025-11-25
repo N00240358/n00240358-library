@@ -7,17 +7,21 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-[#2b1b1b] overflow-hidden shadow-sm sm:rounded-lg border border-yellow-600/40">
                 <div class="p-6 text-gray-200">
-                    <!-- Go Back Button -->
-                    <a href="{{ route('musicals.index') }}" {{-- A button that is using the same styling as the primary button to go back to the index without making any changes. --}}
-                       class="inline-flex items-center px-4 py-2 bg-gray-700 hover:bg-gray-600 text-[#f2c94c] font-bold rounded-md shadow-md transition">
-                        Go Back
-                    </a>
-                    <div class="mt-6 mb-4">
-<a href="{{ route('checkout', $musical->id) }}"
-   class="inline-flex items-center px-4 py-2 bg-yellow-500 hover:bg-orange-700 text-white font-bold rounded-lg shadow-md transition">
-    Book Musical
-</a>
-</div>
+                    <div class="flex flex-wrap justify-between">
+                        <!-- Go Back Button -->
+                        <div class="mt-6 mb-4">
+                            <a href="{{ route('musicals.index') }}" {{-- A button that is using the same styling as the primary button to go back to the index without making any changes. --}}
+                            class="inline-flex items-center px-4 py-2 bg-gray-700 hover:bg-gray-600 text-[#f2c94c] font-bold rounded-md shadow-md transition">
+                            Go Back
+                            </a>
+                        </div>
+                        <div class="mt-6 mb-4">
+                            <a href="{{ route('checkout', $musical->id) }}"
+                            class="inline-flex items-center px-4 py-2 bg-yellow-500 hover:bg-orange-700 text-white font-bold rounded-lg shadow-md transition">
+                            Book Musical
+                            </a>
+                        </div>
+                    </div>
 
                     {{-- <h3 class="font-semibold text-lg mb-4 text-[#f2c94c]">Musical Details</h3> --}}
 

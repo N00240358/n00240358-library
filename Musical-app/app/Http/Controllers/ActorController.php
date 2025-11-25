@@ -105,11 +105,11 @@ public function store(Request $request)
         $actor->biography = $request->biography;
         $actor->save();
 
-if ($request->has('musicals')) {
-    $actor->musicals()->sync($request->musicals);
-} else {
-    $actor->musicals()->detach(); // optional: clear all if none selected
-}
+        if ($request->has('musicals')) {
+            $actor->musicals()->sync($request->musicals);
+        } else {
+            $actor->musicals()->detach(); // optional: clear all if none selected
+        }
 
 
         return redirect()->route('actors.index')->with('success', 'Actor updated successfully!');

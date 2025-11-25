@@ -155,6 +155,8 @@
     </div>
 </form>
 
+
+{{-- All the code and styling for TomSelect --}}
 <style>
     #selected-actors-container {
         margin-top: 1rem;

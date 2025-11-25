@@ -4,8 +4,8 @@
     @csrf
 
     {{-- Header --}}
-    <h2 class="text-3xl font-bold text-yellow-400 mb-6 text-center">Pay for "{{ $musical->title }}"</h2>
-    <p class="text-gray-300 mb-6 text-center">Test payment — no real charges will be made.</p>
+    <h2 class="text-3xl font-bold text-yellow-400 mb-6 text-center">Tickets for {{ $musical->title }}!</h2>
+    <p class="text-gray-300 mb-6 text-center">Test payment, no real charges will be made.</p>
 
     {{-- Card Number --}}
     <div class="mb-4">
@@ -68,13 +68,13 @@
 
     {{-- Amount --}}
     <div class="mb-6 text-center">
-        <p class="text-gray-300 text-lg">Amount: <span class="font-bold text-yellow-400">$10.00</span></p>
+        <p class="text-gray-300 text-lg">Amount: <span class="font-bold text-yellow-400">€10.00</span></p>
     </div>
 
     {{-- Buttons --}}
     <div class="flex flex-col space-y-4">
         <button type="submit" class="w-full px-4 py-3 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold rounded-lg shadow-md transition text-lg">
-            Pay $10
+            Pay €10
         </button>
         <a href="{{ route('musicals.show', $musical) }}" class="w-full px-4 py-3 bg-gray-700 hover:bg-gray-600 text-yellow-400 font-bold rounded-lg shadow-md transition text-center text-lg">
             Cancel
