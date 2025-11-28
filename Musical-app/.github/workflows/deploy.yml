@@ -1,0 +1,43 @@
+# Workflow Name
+name: Deploy
+
+
+# This runs whenever code is pushed to branch 02_CA2.
+on:
+  push:
+    branches: [ "02_CA2" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Copy .env.example and create a fresh .env file.
+      - name: Copy environment template
+        run: cp .env.example .env
+
+      # Insert GitHub Secrets into the .env file.
+      - name: Set environment variables from GitHub Secrets
+        run: |
+          echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
+          echo "STRIPE_KEY=${{ secrets.STRIPE_KEY }}" >> .env
+          echo "STRIPE_SECRET=${{ secrets.STRIPE_SECRET }}" >> .env
+          echo "STRIPE_WEBHOOK_SECRET=${{ secrets.STRIPE_WEBHOOK_SECRET }}" >> .env
+
+      # Install PHP dependencies in production mode.
+      - name: Install dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      # If APP_KEY is missing, automatically generate one.
+      - name: Generate app key if missing
+        run: |
+          if ! grep -q "APP_KEY=base64" .env; then
+            php artisan key:generate
+          fi
+
+      # 6. Run database migrations
+      - name: Other deployment steps…
+        run: php artisan migrate --force
