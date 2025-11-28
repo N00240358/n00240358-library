@@ -12,7 +12,7 @@
 
                     {{-- Actor Details Component --}}
                     <x-actor-details
-                        :actor="$actor"
+                        :actor="$actor" {{-- passes the actor data to the actor details component to display all relevant information --}}
                     />
                </div>
             </div>

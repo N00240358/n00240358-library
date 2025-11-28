@@ -21,6 +21,6 @@ class SongForm extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.SongForm');
+        return view('components.song-form');
     }
 }

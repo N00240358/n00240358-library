@@ -12,7 +12,7 @@ class TicketController extends Controller
      */
     public function index()
     {
-        $tickets = Ticket::where('user_id', auth()->id())->get();
+        $tickets = Ticket::where('user_id', auth()->id())->get(); // Get tickets for the authenticated user
         return view('tickets.index', compact('tickets'));
     }
 
@@ -21,7 +21,7 @@ class TicketController extends Controller
      */
     public function show(Ticket $ticket)
     {
-        if ($ticket->user_id !== auth()->id()) {
+        if ($ticket->user_id !== auth()->id()) { //auth for owner only
             return redirect()->route('tickets.index')->with('error', 'Access denied.');
         }
 

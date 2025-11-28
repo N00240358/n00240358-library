@@ -9,7 +9,7 @@ class Song extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+    protected $fillable = [ //fillable fields for song
     'musical_id',
     'title',
     'duration',
@@ -18,7 +18,7 @@ class Song extends Model
 
 
     public function musical()
-    {
+    { // Song belongs to a Musical
         return $this->belongsTo(Musical::class);
     }
 

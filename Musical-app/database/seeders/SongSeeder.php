@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 
 class SongSeeder extends Seeder
-{
+{ //seed songs table
     public function run(): void
     {
         $currentTimestamp = Carbon::now();
@@ -72,13 +72,13 @@ class SongSeeder extends Seeder
 
         // Loop through musicals and add songs
         foreach ($songs as $musicalTitle => $songList) {
-
+            // Find the musical by title
             $musical = Musical::where('title', $musicalTitle)->first();
 
             if (!$musical) {
                 continue; // in case MusicalSeeder didn't run yet
             }
-
+            // Create songs for the musical
             foreach ($songList as $songData) {
                 Song::create([
                     'musical_id' => $musical->id,

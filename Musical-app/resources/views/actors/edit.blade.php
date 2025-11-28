@@ -11,8 +11,8 @@
                         :action="route('actors.update', $actor)" {{-- routes to the update method in the actorController to then the actor Form --}}
                         :method="'PUT'"
                         :actor="$actor" {{-- passes the actor data to the form to prefill with existing data --}}
-                        :musicals="$musicals"
-                        :actorMusical="$actorMusical"
+                        :musicals="$musicals" {{-- passes the musicals to the actor form for the musicals multi select --}}
+                        :actorMusical="$actorMusical" {{-- passes the actor's associated musicals to pre-select in the multi select --}}
                     />
                 </div>
             </div>

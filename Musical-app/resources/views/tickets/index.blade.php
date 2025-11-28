@@ -13,7 +13,7 @@
                                 
                                 {{-- Display the musical associated with the ticket --}}
                                 <a href="{{ route('musicals.show', $ticket->musical) }}">
-                                    <x-musical-card
+                                    <x-musical-card {{-- Musical Card Component to show the musical details --}}
                                         :title="$ticket->musical->title"
                                         :image="$ticket->musical->image"
                                         :director="$ticket->musical->director"
@@ -28,7 +28,7 @@
                         @endforeach
                     </div>
 
-                    {{-- Optional: show message if no tickets --}}
+                    {{-- show message if no tickets --}}
                     @if($tickets->isEmpty())
                         <p class="mt-6 text-gray-400">You have not purchased any tickets yet.</p>
                     @endif

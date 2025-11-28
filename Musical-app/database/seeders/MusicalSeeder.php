@@ -10,7 +10,7 @@ use Carbon\Carbon;
 class MusicalSeeder extends Seeder
 {
     public function run(): void
-    {
+    { //seed musicals table
         $currentTimestamp = Carbon::now();
 
         $musicals = [
@@ -49,8 +49,7 @@ class MusicalSeeder extends Seeder
                 ['created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp]
             ));
 
-            // Make sure you have ActorSeeder run first (see fix below)
-            $actors = Actor::inRandomOrder()->take(2)->pluck('id');
+            $actors = Actor::inRandomOrder()->take(2)->pluck('id'); //attach 2 random actors to each musical
             $musical->actors()->attach($actors);
         }
     }

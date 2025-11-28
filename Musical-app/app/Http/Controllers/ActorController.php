@@ -23,7 +23,7 @@ class ActorController extends Controller
      */
     public function create()
     {
-        if (auth()->user()->role !== 'admin') {
+        if (auth()->user()->role !== 'admin') { //auth for admin only
             return redirect()->route('actors.index')->with('error', 'Access denied.');
         }
 
@@ -36,11 +36,11 @@ class ActorController extends Controller
      */
 public function store(Request $request)
 {
-    if (auth()->user()->role !== 'admin') {
+    if (auth()->user()->role !== 'admin') { //auth for admin only
         return redirect()->route('actors.index')->with('error', 'Access denied.');
     }
 
-    $request->validate([
+    $request->validate([  //validation for actor creation
         'name' => 'required|string|max:255',
         'birthdate' => 'required|date',
         'biography' => 'required|string|max:1000',
@@ -49,7 +49,7 @@ public function store(Request $request)
 
     $currentTimestamp = Carbon::now();
 
-    $actor = Actor::create([
+    $actor = Actor::create([ //creation of actor
         'name' => $request->name,
         'birthdate' => $request->birthdate,
         'biography' => $request->biography,
@@ -57,7 +57,7 @@ public function store(Request $request)
         'updated_at' => $currentTimestamp,
     ]);
 
-    if ($request->has('musicals')) {
+    if ($request->has('musicals')) { //attach actor to musicals
         $actor->musicals()->attach($request->musicals);
     }
 
@@ -79,12 +79,12 @@ public function store(Request $request)
      */
     public function edit(Actor $actor)
     {
-        if (auth()->user()->role !== 'admin') {
+        if (auth()->user()->role !== 'admin') { //auth for admin only
             return redirect()->route('actors.index')->with('error', 'Access denied.');
         }
 
-        $musicals = Musical::all();
-        $actorMusical  = $actor->musicals->pluck('id')->toArray();
+        $musicals = Musical::all(); // Get all musicals for selection
+        $actorMusical  = $actor->musicals->pluck('id')->toArray(); // Get IDs of musicals the actor is in
         return view('actors.edit', compact('actor', 'musicals', 'actorMusical'));
     }
 
@@ -105,7 +105,7 @@ public function store(Request $request)
         $actor->biography = $request->biography;
         $actor->save();
 
-        if ($request->has('musicals')) {
+        if ($request->has('musicals')) { //sync musicals
             $actor->musicals()->sync($request->musicals);
         } else {
             $actor->musicals()->detach(); // optional: clear all if none selected
@@ -120,12 +120,12 @@ public function store(Request $request)
      */
     public function destroy(Actor $actor)
     {
-        if (auth()->user()->role !== 'admin') {
+        if (auth()->user()->role !== 'admin') { //auth for admin only
             return redirect()->route('actors.index')->with('error', 'Access denied.');
         }
 
         $actor->musicals()->detach(); // Detach relationships
-        $actor->delete();
+        $actor->delete(); // Delete actor
         return redirect()->route('actors.index')->with('success', 'Actor deleted successfully!');
     }
 }

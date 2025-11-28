@@ -31,41 +31,36 @@
         // --- Stripe Payment Routes ---
 
         // Show payment form
-    // Show checkout form
-    Route::get('/checkout/{musical}', function ($musical) {
+        // Show checkout form
+        Route::get('/checkout/{musical}', function ($musical) {
+            $musical = \App\Models\Musical::findOrFail($musical);
+            return view('checkout', compact('musical')); // <-- use parent view, not component directly
+        })->name('checkout');
+
+        Route::post('/checkout/{musical}', function (Request $request, $musical) {
         $musical = \App\Models\Musical::findOrFail($musical);
-        return view('checkout', compact('musical')); // <-- use parent view, not component directly
-    })->name('checkout');
 
+        // Set Stripe API key
+        Stripe::setApiKey(env('STRIPE_SECRET'));
 
+        // Create Stripe charge
+        $charge = \Stripe\Charge::create([
+            'amount' => 1000, // amount in cents
+            'currency' => 'eur',
+            'source' => 'tok_visa', 
+            'description' => 'Payment for musical: ' . $musical->title, // description with musical title
+        ]);
 
-Route::post('/checkout/{musical}', function (Request $request, $musical) {
-    $musical = \App\Models\Musical::findOrFail($musical);
+        // --- Add Ticket for this user ---
+        $ticket = \App\Models\Ticket::create([
+            'user_id' => auth()->id(),       // link ticket to logged-in user
+            'musical_id' => $musical->id,   // link ticket to the purchased musical
+        ]);
 
-    // Set Stripe API key
-    Stripe::setApiKey(env('STRIPE_SECRET'));
-
-    // Create Stripe charge (or use PaymentIntent in newer Stripe APIs)
-    $charge = \Stripe\Charge::create([
-        'amount' => 1000, // amount in cents
-        'currency' => 'eur',
-        'source' => 'tok_visa', // in production, this should come from Stripe Elements
-        'description' => 'Payment for musical: ' . $musical->title,
-    ]);
-
-    // --- Add Ticket for this user ---
-    $ticket = \App\Models\Ticket::create([
-        'user_id' => auth()->id(),       // link ticket to logged-in user
-        'musical_id' => $musical->id,   // link ticket to the purchased musical
-    ]);
-
-    return redirect()
-        ->route('tickets.index') // redirect to the user’s tickets page
-        ->with('success', 'Payment successful! Your ticket for ' . $musical->title . ' has been added.');
-})->name('checkout.pay');
-
-
-
+        return redirect()
+            ->route('tickets.index') // redirect to the user’s tickets page
+            ->with('success', 'Payment successful! Your ticket for ' . $musical->title . ' has been added.'); // success message with musical title
+            })->name('checkout.pay'); // Route name for processing payment
     });
 
     // Musical Routes
@@ -77,14 +72,17 @@ Route::post('/checkout/{musical}', function (Request $request, $musical) {
     Route::put('/musicals/{musical}', [MusicalController::class, 'update'])->name('musicals.update');
     Route::delete('/musicals/{musical}', [MusicalController::class, 'destroy'])->name('musicals.destroy');
 
-    // Nested song routes first
+    // Nested song routes
     Route::get('musicals/{musical}/songs/create', [SongController::class, 'create'])->name('songs.create');
     Route::post('musicals/{musical}/songs', [SongController::class, 'store'])->name('songs.store');
 
     // Resource routes for songs (index, edit, update, destroy, show)
     Route::resource('songs', SongController::class)->except(['create','store']);
 
+    // Resource routes for actors
     Route::resource('actors', ActorController::class)->middleware('auth');
+
+    // Resource routes for tickets
     Route::resource('tickets', TicketController::class)->middleware('auth');
 
     require __DIR__.'/auth.php';

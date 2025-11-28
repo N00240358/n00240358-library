@@ -16,7 +16,7 @@
     @endif
 
     {{-- Musicals --}}
-    @if($actor->musicals->count())
+    @if($actor->musicals->count()) {{-- checks if the actor is associated with any musicals --}}
         <h3 class="text-[#f2c94c] font-semibold mt-4">Musicals:</h3>
         <ul class="list-disc list-inside text-gray-200">
             @foreach($actor->musicals as $musical)

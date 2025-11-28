@@ -16,27 +16,27 @@
                         {{ __('Dashboard') }}
                     </x-nav-link> --}}
                     <x-nav-link :href="route('musicals.index')" :active="request()->routeIs('musicals.index')"> {{-- a link to the musicals index which is using the All() method --}}
-                        {{ __('View All Musicals') }}
+                        {{ __('View All Musicals') }} {{-- link to musical index --}}
                     </x-nav-link>
 
-                    @if(auth()->user()->role === 'admin') 
+                    @if(auth()->user()->role === 'admin') {{-- only show Create New Musical link to admin users --}}
                     <x-nav-link :href="route('musicals.create')" :active="request()->routeIs('musicals.create')"> {{-- a link to the musicals create that links to the musical form --}}
-                        {{ __('Create New Musicals') }}
+                        {{ __('Create New Musicals') }} {{-- link to musical create --}}
                     </x-nav-link>
                     @endif
 
                     <x-nav-link :href="route('actors.index')" :active="request()->routeIs('actors.index')"> {{-- a link to the actors index which is using the All() method --}}
-                        {{ __('View All Actors') }}
+                        {{ __('View All Actors') }} {{-- link to actor index --}}
                     </x-nav-link>
 
-                    @if(auth()->user()->role === 'admin') 
+                    @if(auth()->user()->role === 'admin') {{-- only show Create New Actor link to admin users --}}
                     <x-nav-link :href="route('actors.create')" :active="request()->routeIs('actors.create')"> {{-- a link to the actors create that links to the musical form --}}
-                        {{ __('Create New Actor') }}
+                        {{ __('Create New Actor') }} {{-- link to actor create --}}
                     </x-nav-link>
                     @endif
 
                     <x-nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets.index')"> {{-- a link to the tickets index which is using the filtering by user id to find only their tickets --}}
-                        {{ __('See Your Tickets') }} 
+                        {{ __('See Your Tickets') }}  {{-- link to ticket index --}}
                     </x-nav-link>
                 </div>
             </div>

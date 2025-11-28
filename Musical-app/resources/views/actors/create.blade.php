@@ -9,7 +9,7 @@
                     <x-actor-form
                         :action="route('actors.store')" {{-- routes to the store method in the actorController to then the actor Form --}}
                         :method="'POST'"
-                        :musicals="$musicals"
+                        :musicals="$musicals" {{-- passes the musicals to the actor form for the musicals multi select --}}
                     />
                 </div>
             </div>

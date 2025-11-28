@@ -23,7 +23,7 @@ class MusicalController extends Controller
      */
     public function create()
     {
-        if (auth()->user()->role !== 'admin') {
+        if (auth()->user()->role !== 'admin') { //auth for admin only
             return redirect()->route('musicals.index')->with('error', 'Access denied.');
         }
             $actors = Actor::all();
@@ -81,7 +81,7 @@ class MusicalController extends Controller
      */
     public function show(Musical $musical)
     {
-        $musical->load('songs', 'actors');
+        $musical->load('songs', 'actors'); // Load songs and actors related to this musical
         return view('musicals.show', compact('musical'));
         // return view('musicals.show')->with('musical', $musical); //when you click on a musical it takes you to the show view and shows the details of that musical
     }
@@ -91,11 +91,11 @@ class MusicalController extends Controller
      */
     public function edit(Musical $musical)
     {
-        if (auth()->user()->role !== 'admin') {
+        if (auth()->user()->role !== 'admin') { //auth for admin only
             return redirect()->route('musicals.index')->with('error', 'Access denied.');
         }
-            $actors = Actor::all();
-            $musical->load('actors');
+            $actors = Actor::all(); // Get all actors for selection
+            $musical->load('actors'); // Load actors related to this musical
             return view('musicals.edit', compact('musical', 'actors')); //brings you to the form with the correct id to edit
     }
 
@@ -104,7 +104,7 @@ class MusicalController extends Controller
          */
     public function update(Request $request, Musical $musical)
     { 
-    $data = $request->validate([
+    $data = $request->validate([ //validation for musical update
         'title' => 'required|string|max:100',
         'description' => 'required|string|max:1000',
         'premiere_date' => 'required|string|max:20',
@@ -148,7 +148,7 @@ class MusicalController extends Controller
      */
     public function destroy(Musical $musical)
 {
-    if (auth()->user()->role !== 'admin') {
+    if (auth()->user()->role !== 'admin') { //auth for admin only
             return redirect()->route('musicals.index')->with('error', 'Access denied.');
     }
     // get url to image folder

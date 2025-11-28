@@ -1,4 +1,4 @@
-@props(['action', 'method', 'actor' => null, 'musicals' => [], 'actorMusical' => []])<!-- gets action, method, and actor as properties to call from the database -->
+@props(['action', 'method', 'actor' => null, 'musicals' => [], 'actorMusical' => []])<!-- gets action, method, actor, musicals and actor_musicals as properties to call from the database -->
 
 <form action="{{ $action }}" method="POST" enctype="multipart/form-data"> {{-- form to create or edit a actor --}}
     @csrf
@@ -122,15 +122,14 @@
     .ts-control .item { display: none !important; }
     .ts-control input[type="text"] { opacity: 1 !important; }
 </style>
-
-<script>
+<script> //JavaScript to initialize TomSelect and handle the selected musicals preview area taken from TomSelect documentation with customizations, tailwind installed this already in the project, so no need to call it again
 document.addEventListener("DOMContentLoaded", function() {
-    try {
+    try { 
         if (typeof TomSelect === 'undefined') {
             console.error('TomSelect is not loaded. Make sure the TomSelect script is included before this script.');
             return;
         }
-
+        // Get the select element
         const selectElem = document.querySelector("#musicals");
         if (!selectElem) {
             console.error('#musicals select element not found in DOM.');
@@ -143,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function() {
             maxItems: null,
             placeholder: "Search & select musicals...",
             hideSelected: true,
-            // keep updates in sync via handlers below
+            // keep updates in sync via handlers below allows multiple seleciton
             onItemAdd: () => updateSelectedMusicals(),
             onItemRemove: () => updateSelectedMusicals(),
         });
@@ -155,8 +154,8 @@ document.addEventListener("DOMContentLoaded", function() {
         toggleBtn.id = "toggle-musicals";
         toggleBtn.textContent = "See more";
         const selectParent = selectElem.parentNode;
-        selectParent.appendChild(container);
-        selectParent.appendChild(toggleBtn);
+        selectParent.appendChild(container); // preview area
+        selectParent.appendChild(toggleBtn); // button to expand/collapse
 
         // Expand/collapse toggle
         toggleBtn.addEventListener("click", function() {
@@ -176,10 +175,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 const opt = Array.from(selectElem.options).find(o => String(o.value) === String(value));
                 const text = opt ? opt.text : value;
 
-                const tag = document.createElement("span");
-                tag.classList.add("selected-musical-item");
-                tag.textContent = text;
-                tag.setAttribute('data-value', value);
+                const tag = document.createElement("span"); 
+                tag.classList.add("selected-musical-item"); 
+                tag.textContent = text; 
+                tag.setAttribute('data-value', value); 
 
                 // click to remove this musical (immediately updates TomSelect & preview)
                 tag.addEventListener('click', function(e) {
@@ -191,7 +190,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     } else {
                         // fallback: deselect native option and dispatch change
                         const nativeOpt = Array.from(selectElem.options).find(o => String(o.value) === String(val));
-                        if (nativeOpt) {
+                        if (nativeOpt) { 
                             nativeOpt.selected = false;
                             selectElem.dispatchEvent(new Event('change', { bubbles: true }));
                             updateSelectedMusicals();

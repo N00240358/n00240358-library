@@ -20,7 +20,7 @@
                                     />
                                 </a>
 
-                                @if(auth()->user()->role === 'admin') 
+                                @if(auth()->user()->role === 'admin') {{-- only show Edit and Delete buttons to admin users --}}
                                 {{-- Edit and Delete Buttons --}}
                                 <div class="mt-4 flex justify-between">
                                     <!-- Edit Button -->

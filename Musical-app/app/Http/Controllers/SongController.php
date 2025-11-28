@@ -13,7 +13,7 @@ class SongController extends Controller
      */
     public function create(Musical $musical)
     {
-        if (auth()->user()->role !== 'admin') {
+        if (auth()->user()->role !== 'admin') { //auth for admin only
             return redirect()->route('musicals.index')->with('error', 'Access denied.');
         }
 
@@ -25,7 +25,7 @@ class SongController extends Controller
      */
     public function store(Request $request, Musical $musical)
     {
-        if (auth()->user()->role !== 'admin') {
+        if (auth()->user()->role !== 'admin') { //auth for admin only
             return redirect()->route('musicals.show', $musical)
                              ->with('error', 'Access denied.');
         }
@@ -50,7 +50,7 @@ class SongController extends Controller
      */
     public function edit(Song $song)
     {
-        if (auth()->user()->role !== 'admin') {
+        if (auth()->user()->role !== 'admin') { //auth for admin only
             return redirect()->route('musicals.show', $song->musical)
                              ->with('error', 'Access denied.');
         }
@@ -64,12 +64,12 @@ class SongController extends Controller
      */
     public function update(Request $request, Song $song)
     {
-        if (auth()->user()->role !== 'admin') {
+        if (auth()->user()->role !== 'admin') { //auth for admin only
             return redirect()->route('musicals.show', $song->musical)
                              ->with('error', 'Access denied.');
         }
 
-        $validated = $request->validate([
+        $validated = $request->validate([ // Validate input
             'title' => 'required|string|max:255',
             'duration' => 'required|numeric|min:0.01|max:60',
             'composer' => 'required|string|max:255',
@@ -88,7 +88,7 @@ class SongController extends Controller
     {
         $musical = $song->musical;
 
-        if (auth()->user()->role !== 'admin') {
+        if (auth()->user()->role !== 'admin') { //auth for admin only
             return redirect()->route('musicals.show', $musical)
                              ->with('error', 'Access denied.');
         }

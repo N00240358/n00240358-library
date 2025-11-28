@@ -9,11 +9,11 @@ use Carbon\Carbon;
 
 class AdminSeeder extends Seeder
 {
-    public function run()
+    public function run() //seed admin user
     {
         $currentTimestamp = Carbon::now();
 
-        User::create([
+        User::create([ //create admin user
             'name' => 'Admin User',
             'email' => 'admin@example.com',
             'password' => Hash::make('password'),
@@ -22,7 +22,7 @@ class AdminSeeder extends Seeder
             'updated_at' => $currentTimestamp,
         ]);
 
-        User::create([
+        User::create([ //create regular user
             'name' => 'User User',
             'email' => 'user@example.com',
             'password' => Hash::make('password'),

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) { //adding stripe columns to users table
             $table->string('stripe_id')->nullable()->after('role');
             $table->string('pm_type')->nullable()->after('stripe_id');
             $table->string('pm_last_four', 4)->nullable()->after('pm_type');

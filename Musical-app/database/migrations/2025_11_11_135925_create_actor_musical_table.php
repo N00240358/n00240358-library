@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('actor_musical', function (Blueprint $table) {
+        Schema::create('actor_musical', function (Blueprint $table) { //pivot table for actors and musicals
             $table->id();
             $table->foreignId('musical_id')->constrained()->onDelete('cascade');
             $table->foreignId('actor_id')->constrained()->onDelete('cascade');

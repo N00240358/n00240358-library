@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 class ActorSeeder extends Seeder
 {
-    public function run(): void
+    public function run(): void //seed actors table
     {
         $currentTimestamp = Carbon::now();
 
@@ -30,7 +30,7 @@ class ActorSeeder extends Seeder
             ],
         ];
 
-        foreach ($actors as $actorData) {
+        foreach ($actors as $actorData) { //create actors
             Actor::create(array_merge(
                 $actorData,
                 ['created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp]

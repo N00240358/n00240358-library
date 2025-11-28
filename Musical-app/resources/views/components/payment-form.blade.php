@@ -1,5 +1,6 @@
 @props(['musical'])
 
+{{-- Payment form for purchasing tickets to a musical --}} 
 <form action="{{ route('checkout.pay', $musical->id) }}" method="POST" class="max-w-md mx-auto mt-10 p-8 bg-gray-900 rounded-xl shadow-lg border border-yellow-500">
     @csrf
 
@@ -14,7 +15,7 @@
             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
                 💳
             </span>
-            <input 
+            <input {{-- Card number input field with a credit card icon, only the inputted values here will work --}}
                 type="text" 
                 name="card_number" 
                 id="card_number" 
@@ -26,7 +27,7 @@
         </div>
     </div>
 
-    {{-- Expiration + CVC --}}
+    {{-- Expiration + CVC, only the values here will work --}}
     <div class="flex space-x-4 mb-4">
         <div class="flex-1">
             <label for="exp_month" class="block text-sm text-white font-semibold mb-1">Exp. Month</label>
@@ -66,7 +67,7 @@
         </div>
     </div>
 
-    {{-- Amount --}}
+    {{-- Amount, test amount --}}
     <div class="mb-6 text-center">
         <p class="text-gray-300 text-lg">Amount: <span class="font-bold text-yellow-400">€10.00</span></p>
     </div>

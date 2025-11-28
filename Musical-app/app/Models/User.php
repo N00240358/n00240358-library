@@ -25,7 +25,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
+        'role', // 'role' field to distinguish between admin and regular users
     ];
 
     /**

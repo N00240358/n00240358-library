@@ -156,7 +156,7 @@
 </form>
 
 
-{{-- All the code and styling for TomSelect --}}
+{{-- All the code and styling for TomSelect, see actor form for more code and comments. --}}
 <style>
     #selected-actors-container {
         margin-top: 1rem;
@@ -190,8 +190,7 @@
     .ts-control .item { display: none !important; }
     .ts-control input[type="text"] { opacity: 1 !important; }
 </style>
-
-<script>
+<script> //JavaScript to initialize TomSelect and handle the selected musicals preview area taken from TomSelect documentation with customizations, tailwind installed this already in the project, so no need to call it again
 document.addEventListener("DOMContentLoaded", function() {
 
     const selectElem = document.querySelector("#actors");
